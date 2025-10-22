@@ -4,12 +4,13 @@ const ObjectId = Schema.ObjectId;
 
 const SachSchema = new Schema(
     {
-        TenSach: String,
-        DonGia: Number,
-        SoQuyen: Number,
-        NamXuatBan: Number,
-        MaNXB: { type: ObjectId, ref: 'NhaXuatBan' },
-        TacGia: String
+        ten: String,
+        gia: Number,
+        soquyen: Number,
+        namxuatban: Number,
+        manxb: { type: ObjectId, ref: 'NhaXuatBan' },
+        tacgia: String,
+        theloai: String,
     }
 ); 
 

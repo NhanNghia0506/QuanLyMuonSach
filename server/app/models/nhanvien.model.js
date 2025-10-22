@@ -3,14 +3,15 @@ const Schema = mongoose.Schema;
 
 const NhanVienSchema = new Schema(
     {
-        HoTenNV: String,
-        Password: String,
-        ChucVu: {
+        hoten: String,
+        email: String,
+        matkhau: String,
+        chucvu: {
             type: String,
             enum: ['Quản lí', 'Thu ngân']
         },
-        DiaChi: String,
-        SoDienThoai: String
+        diachi: String,
+        sodienthoai: String
     }
 );
 

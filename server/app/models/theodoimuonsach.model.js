@@ -4,10 +4,17 @@ const ObjectId = Schema.ObjectId;
 
 const TheoDoiMuonSachSchema = new Schema(
     {
-        MaDocGia: { type: ObjectId, ref: 'DocGia' },
-        MaSach: { type: ObjectId, ref: 'Sach' },
-        NgayMuon: Date,
-        NgayTra: Date
+        madocgia: { type: ObjectId, ref: 'DocGia' },
+        masach: { type: ObjectId, ref: 'Sach' },
+        manhanvien: { type: ObjectId, ref: 'NhanVien' },
+        ngaymuondukien: Date,
+        ngaytradukien: Date,
+        ngaytrathucte: Date,
+        trangthai: {
+            type: String,
+            enum: ['Đang chờ duyệt', 'Đã duyệt', 'Đã nhận', 'Đã trả', 'Hủy']
+        },
+        ghichu: String
     }
 )
 

@@ -3,15 +3,16 @@ const Schema = mongoose.Schema;
 
 const DocGiaSchema = new Schema(
     {
-        HoLot: String,
-        Ten: String,
-        NgaySinh: Date,
-        Phai: {
+        hoten: String,
+        email: String,
+        matkhau: String,
+        gioitinh: {
             type: String,
             enum: ['Nam', 'Nữ']
         },
-        DiaChi: String,
-        DienThoai: String,
+        diachi: String,
+        sodienthoai: String,
+        ngaydangky: Date,
     }
 );
 
