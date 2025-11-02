@@ -15,7 +15,7 @@ class ReaderService {
             throw new Error('Email không hợp lệ');
         }
 
-        if(await readerRepository.existsUser(data.email)) {
+        if(await readerRepository.existsReader(data.email)) {
             throw new Error("Email đã được sử dụng");
         }
 
@@ -33,7 +33,7 @@ class ReaderService {
             throw new Error('Email không hợp lệ');
         }
 
-        const reader = await readerRepository.existsUser(data.email);
+        const reader = await readerRepository.existsReader(data.email);
         if(!reader) {
             throw new Error('Email này không tồn tại trong hệ thống')
         }

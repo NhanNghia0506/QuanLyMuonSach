@@ -1,9 +1,9 @@
-import { IUser } from "../../modules/user/models";
+import { IReader } from "../../models/reader.model";
 
 declare global {
     namespace Express {
         interface Request {
-            user?: IUser | null;
+            reader?: IReader | null;
         }
     }
 }

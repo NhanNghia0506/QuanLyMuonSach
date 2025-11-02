@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import  Jwt, { JwtPayload }  from "jsonwebtoken";
-import UserRepository from "../modules/user/repositories";
+import readerRepository from "../repositories/reader.repository";
+
 export interface MyJwtPayload extends JwtPayload {
     id: string;
     email: string
 }
 
-const AuthMiddleWare = async ( req: Request, res: Response, next: Function ) => {
+const ReaderMiddleWare = async ( req: Request, res: Response, next: Function ) => {
     try {   
         const token = req.headers['authorization']?.split(" ")[1];
         if(!token) {
@@ -14,13 +15,13 @@ const AuthMiddleWare = async ( req: Request, res: Response, next: Function ) => 
         }
 
         const decoded = Jwt.verify(token, process.env.JWT_SECRET!) as MyJwtPayload;
-        const user = await new UserRepository().getUserById(decoded.id);
-        if(user)
-            req.user = user;
+        const reader = await readerRepository.getReaderById(decoded.id);
+        if(reader)
+            req.reader = reader;
         next();
     }catch(error: any) {
         return res.status(403).json({ message: "Token không hợp lệ" });
     }
 }
 
-export default AuthMiddleWare;
+export default ReaderMiddleWare;

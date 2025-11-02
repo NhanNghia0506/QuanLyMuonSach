@@ -43,6 +43,8 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src", "src/types"],
   "exclude": ["node_modules"]
