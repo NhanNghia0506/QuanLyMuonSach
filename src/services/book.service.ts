@@ -9,6 +9,10 @@ class BookService {
     async delete(id: string){
         return await bookRepository.delete(id);
     }
+
+    async update(id: string, data: CreateBookDto){
+        return await bookRepository.update(id, data);
+    }
 }
 
 export default new BookService();

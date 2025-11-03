@@ -23,6 +23,16 @@ class BookController {
             res.status(201).json({ message: error.message });
         }
     }
+
+    async update(req: Request<{ id: string }, {}>, res: Response) {
+        try {
+            const id = req.params.id;
+            const newBook = await bookService.update(id, {...req.body, imageUrl: req.file?.filename });
+            res.status(200).json({ newBook });
+        } catch (error: any) {
+            res.status(201).json({ message: error.message });
+        }
+    }
 }
 
 export default new BookController();

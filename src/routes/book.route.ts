@@ -6,5 +6,6 @@ import CreateBookDto from "../dtos/create.book.dto";
 const BookRouter = express.Router();
 
 BookRouter.post('/create',upload.single('image'), validateDto(CreateBookDto), BookController.create)
-BookRouter.delete('/delete/:id', BookController.delete)
+BookRouter.delete('/delete/:id', BookController.delete);
+BookRouter.put('/update/:id', upload.single('image'), BookController.update);
 export default BookRouter;
