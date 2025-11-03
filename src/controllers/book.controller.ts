@@ -10,6 +10,19 @@ class BookController {
             res.status(201).json({ message: error.message });
         }
     }
+
+    async delete(req: Request<{ id: string}, {}, {}>, res: Response){
+        try {
+            const success = await bookService.delete(req.params.id);
+            if(success){
+                res.status(200).json({ message: "Book deleted successfully" });
+            } else {
+                res.status(404).json({ message: "Book not found" });
+            }
+        } catch (error: any) {
+            res.status(201).json({ message: error.message });
+        }
+    }
 }
 
 export default new BookController();

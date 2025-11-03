@@ -1,13 +1,8 @@
-export interface IReaderLogin {
-    email: string;
-    password: string;
-}
-
-export class ReaderLoginDto implements IReaderLogin {
+export class ReaderLoginDto {
     email: string;
     password: string;
     
-    constructor({ email, password }: IReaderLogin) {
+    constructor({ email, password }: any) {
         this.email = email,
         this.password = password
     }
