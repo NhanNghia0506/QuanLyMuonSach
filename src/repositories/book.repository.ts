@@ -3,6 +3,10 @@ import UpdateBookDto from "../dtos/update.book.dto";
 import Book from "../models/book.model";
 
 class BookRepository {
+    // Tìm kiếm book theo id
+    async findById(id: string) {
+        return await Book.findById(id);
+    }
     async create(data:CreateBookDto) {
         return await Book.create(data);
     }

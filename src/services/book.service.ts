@@ -1,5 +1,6 @@
 import CreateBookDto from "../dtos/create.book.dto";
 import bookRepository from "../repositories/book.repository";
+import fileService from "./file.service";
 
 class BookService {
     async create(data: CreateBookDto){
@@ -7,11 +8,23 @@ class BookService {
     }
 
     async delete(id: string){
-        return await bookRepository.delete(id);
+        // thực hiện xóa ảnh khỏi thư mục uploads
+        const book = await bookRepository.findById(id);
+        if(book) {
+           await fileService.deleteByUrl(book.imageUrl);
+           return await bookRepository.delete(id);
+        }
+        return null;
     }
 
     async update(id: string, data: CreateBookDto){
-        return await bookRepository.update(id, data);
+        // thực hiện xóa ảnh khỏi thư mục uploads
+        const book = await bookRepository.findById(id);
+        if(book) {
+           await fileService.deleteByUrl(book.imageUrl);
+           return await bookRepository.update(id, data);
+        }
+        return null;
     }
 }
 

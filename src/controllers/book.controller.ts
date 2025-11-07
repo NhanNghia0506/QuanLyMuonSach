@@ -1,17 +1,18 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bookService from "../services/book.service";
+import AppError from "../utils/app.error";
 
 class BookController {
-    async create(req: Request, res: Response) {
+    async create(req: Request, res: Response, next: NextFunction) {
         try {
             const book = await bookService.create({...req.body, imageUrl: req.file?.filename });
             res.status(201).json({ book });
         } catch (error: any) {
-            res.status(201).json({ message: error.message });
+            next(new AppError(error.message, 400));
         }
     }
 
-    async delete(req: Request<{ id: string}, {}, {}>, res: Response){
+    async delete(req: Request<{ id: string}, {}, {}>, res: Response, next: NextFunction){
         try {
             const success = await bookService.delete(req.params.id);
             if(success){
@@ -20,17 +21,21 @@ class BookController {
                 res.status(404).json({ message: "Book not found" });
             }
         } catch (error: any) {
-            res.status(201).json({ message: error.message });
+            next(new AppError(error.message, 400));
         }
     }
 
-    async update(req: Request<{ id: string }, {}>, res: Response) {
+    async update(req: Request<{ id: string }, {}>, res: Response, next: NextFunction){ 
         try {
             const id = req.params.id;
             const newBook = await bookService.update(id, {...req.body, imageUrl: req.file?.filename });
-            res.status(200).json({ newBook });
+            if(newBook) {
+                res.status(200).json({ newBook });
+            } else {
+                res.status(404).json({ message: "Book not found" });
+            }
         } catch (error: any) {
-            res.status(201).json({ message: error.message });
+            next(new AppError(error.message, 400));
         }
     }
 }

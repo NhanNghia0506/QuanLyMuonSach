@@ -1,14 +1,19 @@
-import fs from "fs/promises";
+import fs from "fs";
 import path from "path";
 export class FileService {
-    async deleteByUrl(fileUrl: string) {
-        const fileName = fileUrl.split("/uploads/")[1];
-        const filePath = path.join(__dirname, "../uploads", fileName!);
-
+    async deleteByUrl(fileUrl: string): Promise<boolean> {
         try {
-            await fs.unlink(filePath);
-        } catch (error: any) {
-            throw new Error(error.message)
+            let fileName = fileUrl.includes("/uploads/")
+                ? fileUrl.split("/uploads/")[1]
+                : fileUrl;
+            const filePath = path.join(__dirname, "../../uploads", fileName!);
+            if(fs.existsSync(filePath)) {
+                await fs.promises.unlink(filePath);
+                return true;
+            }
+            return false;
+        }catch (error: any) {
+            return false;
         }
     }
 }
