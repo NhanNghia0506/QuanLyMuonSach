@@ -26,6 +26,11 @@ class BookService {
         }
         return null;
     }
+
+    async searchBooks(query: string) {
+        const books = await bookRepository.findByName(query);
+        return books;
+    }
 }
 
 export default new BookService();

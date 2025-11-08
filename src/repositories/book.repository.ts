@@ -7,6 +7,12 @@ class BookRepository {
     async findById(id: string) {
         return await Book.findById(id);
     }
+
+    // Tìm kiếm book theo tên
+    async findByName(name: string) {
+        return await Book.find({ name: { $regex: name, $options: 'i' } });
+    }
+
     async create(data:CreateBookDto) {
         return await Book.create(data);
     }

@@ -38,6 +38,15 @@ class BookController {
             next(new AppError(error.message, 400));
         }
     }
+
+    async searchBooks(req: Request<{}, {}, {}, { search: string }>, res: Response, next: NextFunction) {
+        try {
+            const books = await bookService.searchBooks(req.query.search);
+            res.status(200).json({ books });
+        } catch (error: any) {
+            next(new AppError(error.message, 400));
+        }
+    }
 }
 
 export default new BookController();
