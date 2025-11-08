@@ -12,7 +12,7 @@ const StaffMiddleware = async (req: Request, res: Response, next: NextFunction) 
     try {
         const token = req.headers['authorization']?.split(" ")[1];
         if(!token) {
-            return res.status(401).json({ message: "Bạn chưa đăng nhập"})
+            return next(new AppError('Bạn cần đăng nhập để thực hiện chức năng này', 403));
         }
         
         const decoded = Jwt.verify(token, process.env.JWT_SECRET!) as MyJwtPayload;
