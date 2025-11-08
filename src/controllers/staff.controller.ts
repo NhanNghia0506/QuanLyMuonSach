@@ -14,6 +14,18 @@ class StaffController {
             next(new AppError(error.message, 400))
         }
     }
+
+    async login(req: Request, res: Response, next: NextFunction) {
+        try {
+            const token = await staffService.login(req.body);
+            return res.status(200).json({
+                message: "Đăng nhập thành công",
+                token
+            })
+        } catch (error: any) {
+            next(new AppError(error.message, 400))
+        }
+    }
 }
 
 export default new StaffController();

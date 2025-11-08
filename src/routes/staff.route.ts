@@ -1,8 +1,12 @@
 import  express  from "express";
 import staffController from "../controllers/staff.controller";
+import validateDto from "../middlewares/validateDto.middleware";
+import CreateStaffDto from "../dtos/create.staff.dto";
+import LoginStaffDto from "../dtos/login.staff.dto";
 
 const StaffRoute = express.Router();
 
-StaffRoute.post('/register', staffController.create);
+StaffRoute.post('/register',validateDto(CreateStaffDto), staffController.create);
+StaffRoute.post('/login',validateDto(LoginStaffDto), staffController.login);
 
 export default StaffRoute;

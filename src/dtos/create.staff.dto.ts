@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 
 class CreateStaffDto {
     @IsNotEmpty({ message: 'Tên nhân viên không để dể trống' })
@@ -10,6 +10,7 @@ class CreateStaffDto {
     @IsNotEmpty({ message: 'Mật khẩu nhân viên không để dể trống' })
     password!: string;
     @IsNotEmpty({ message: 'Vai trò nhân viên không để dể trống' })
+    @IsEnum(['admin', 'staff'], { message: 'Vai trò nhân viên không hợp lệ' })
     role!: string;
     @IsNotEmpty({ message: 'Địa chỉ nhân viên không để dể trống' })
     address!: string
