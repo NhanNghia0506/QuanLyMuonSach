@@ -14,6 +14,13 @@ class LoanTransactionRepository {
     async approveLoanTransaction(id: String, data: UpdateLoanTransactionDto) {
         return await LoanTransaction.findByIdAndUpdate(id, data, { new: true });
     }
+
+    async getBorrowedCount(bookId: string ) {
+        return await LoanTransaction.countDocuments({
+            bookId: bookId,
+            status: { $in : ['Đang mượn', 'Được duyệt']}
+        });
+    }
 }
 
 export default new LoanTransactionRepository();
