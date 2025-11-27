@@ -11,8 +11,8 @@ export enum LoanStatus {
 }
 
 export class CreateLoanTransactionDto {
-    @IsNotEmpty({ message: 'Độc giả không được để trống' })
-    readerId!: string;
+    @IsOptional()
+    readerId?: string;
 
     @IsNotEmpty({ message: 'Sách không được để trống' })
     bookId!: string;
@@ -34,8 +34,9 @@ export class CreateLoanTransactionDto {
     @IsDateString({}, { message: 'Ngày trả phải đúng định dạng ngày tháng' })
     returnedAt?: Date;
 
+    @IsOptional()
     @IsEnum(LoanStatus, { message: 'Trạng thái không hợp lệ!' })
-    status!: LoanStatus;
+    status?: LoanStatus;
 
     // Chưa duyệt → optional
     @IsOptional()

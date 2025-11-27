@@ -1,10 +1,12 @@
 import  express  from "express";
-import loanTransactionController from "../controllers/loantransaction.controller";
+import LoanTransactionController from "../controllers/loantransaction.controller";
 import validateDto from "../middlewares/validateDto.middleware";
 import CreateLoanTransactionDto from "../dtos/create.loantransaction.dto";
+import StaffMiddleware from "../middlewares/staff.middleware";
+import ReaderMiddleWare from "../middlewares/reader.middleware";
 
 const LoanTransactionRoute = express.Router();
 
-LoanTransactionRoute.post('/readerReservation', validateDto(CreateLoanTransactionDto), loanTransactionController.loanReservation);
-
+LoanTransactionRoute.post('/readerReservation', ReaderMiddleWare, validateDto(CreateLoanTransactionDto), LoanTransactionController.loanReservation);
+LoanTransactionRoute.post('/approve/:id', StaffMiddleware, LoanTransactionController.approveLoanTransaction);
 export default LoanTransactionRoute;

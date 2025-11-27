@@ -1,6 +1,7 @@
 import { Document, model, Schema } from "mongoose";
 
 export interface IReader extends Document {
+    id?: string,
     name: string,
     email: string,
     password: string,
