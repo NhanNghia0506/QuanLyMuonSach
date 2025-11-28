@@ -1,4 +1,4 @@
-import CreateLoanTransactionDto, { LoanStatus } from "../dtos/create.loantransaction.dto";
+import CreateLoanTransactionDto from "../dtos/create.loantransaction.dto";
 import UpdateLoanTransactionDto from "../dtos/update.loantransaction.dto";
 import LoanTransaction from "../models/loantransaction.model";
 
@@ -24,7 +24,13 @@ class LoanTransactionRepository {
 
     async setStatus(id: string, status: string) {
         return await LoanTransaction.findByIdAndUpdate(id, { status }, { new: true });
-    } 
+    }
+
+    async filter(filter: Record<string, any>) {
+        return LoanTransaction.find(filter)
+        .populate("readerId", "name")
+        .populate("bookId", "name")
+    }
 }
 
 export default new LoanTransactionRepository();

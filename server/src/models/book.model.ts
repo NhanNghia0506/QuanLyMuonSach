@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 
 export interface IBook {
+    id?: string
     name: string,
     imageUrl: string,
     price: number,

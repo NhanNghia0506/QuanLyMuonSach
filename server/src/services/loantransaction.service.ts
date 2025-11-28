@@ -1,7 +1,20 @@
 import CreateLoanTransactionDto from "../dtos/create.loantransaction.dto";
 import UpdateLoanTransactionDto from "../dtos/update.loantransaction.dto";
+import Book from "../models/book.model";
+import Reader from "../models/reader.model";
 import bookRepository from "../repositories/book.repository";
 import loantransactionRepository from "../repositories/loantransaction.repository";
+
+export interface LoanTransactionSearchQuery {
+  reader?: string;
+  book?: string;
+  status?: string;
+  from?: string;
+  to?: string;
+  page?: string;
+  limit?: string;
+}
+
 class LoanTransactionService {
     async loanReservation(data: CreateLoanTransactionDto, readerId: string) {
         const book = await bookRepository.findById(data.bookId)
@@ -56,7 +69,7 @@ class LoanTransactionService {
         if(!loanTrans) {
             throw new Error('Phiếu mượn này không tồn tại');
         }
-        const borrowedAt = new Date(); // ngày mượn
+        const borrowedAt = new Date() // ngày mượn
         const dueAt = this.addDays(borrowedAt, 15); // hạn trả
         const data = {
             borrowedAt,
@@ -65,6 +78,52 @@ class LoanTransactionService {
         } as UpdateLoanTransactionDto
 
         return await loantransactionRepository.update(loanId, data);
+    }
+
+    async filter(query: LoanTransactionSearchQuery) {
+        const {
+            reader,
+            book,
+            status,
+            from,
+            to,
+        } = query;
+
+        const filter: Record<string, any> = {}
+
+        // 1. Lọc theo trạng thái
+        if (status) {
+            filter.status = status;
+        }
+
+        if (from || to) {
+            filter.borrowedAt = {};
+            if (from) filter.borrowedAt.$gte = new Date(from);
+            if (to) filter.borrowedAt.$lte = new Date(to);
+        }
+
+        if(book) {
+            // Tìm tất cả sách có tên chứa 'book'
+            const matchedBooks = await Book.find({
+                name: { $regex: book, $options: "i" }
+            }).select("_id");
+
+            const bookIds = matchedBooks.map(b => b.id); // dùng _id, không phải b.id
+            filter.bookId = { $in: bookIds }; 
+        }
+
+        if(reader) {
+            // Tìm tất cả các readerId khớp với tên này
+            const matchedReaders = await Reader.find({ 
+                name: { $regex: reader, $options: "i" } 
+            }).select("_id");
+
+            const readerIds = matchedReaders.map(r => r.id);
+            filter.readerId = { $in: readerIds };
+        }
+
+        return await loantransactionRepository.filter(filter)
+
     }
     
     // Hàm tìm kiếm phiếu mượn sách

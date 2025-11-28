@@ -13,9 +13,9 @@ export interface ILoanTransaction {
 
 const LoanTransactionSchema = new Schema<ILoanTransaction> (
     {
-        readerId: { type: Schema.Types.ObjectId, ref: 'Readers' },
-        bookId: { type: Schema.Types.ObjectId, ref: 'Books', required: true },
-        staffId: { type: Schema.Types.ObjectId, ref: 'Staffs' },
+        readerId: { type: Schema.Types.ObjectId, ref: 'Reader' },
+        bookId: { type: Schema.Types.ObjectId, ref: 'Book', required: true },
+        staffId: { type: Schema.Types.ObjectId, ref: 'Staff' },
         approvedAt: { type: Date },
         borrowedAt: { type: Date },
         dueAt: { type: Date },

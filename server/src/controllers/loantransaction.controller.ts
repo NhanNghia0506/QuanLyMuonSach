@@ -37,7 +37,21 @@ class LoanTransactionController {
     
     // Hàm tìm kiếm phiếu mượn sách
 
+    async search(req: Request, res: Response, next: NextFunction) {
+        try {
+            const query = req.query;
+            const loanTrans = await loantransactionService.filter(query);
+            if(loanTrans.length == 0) {
+                res.status(404).json({ message: "Không có dữ liệu" });
+            }
+            res.status(200).json({ loanTrans });
+        }catch(error: any) {
+            next(new AppError(error.message, 400));
+        }
+    }
+
     //Hàm chuyển đổi trạng thái khi đọc giả lại trả sách
+
 
     // Hủy yêu cầu mượn
 
