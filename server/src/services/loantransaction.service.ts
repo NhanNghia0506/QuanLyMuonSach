@@ -41,8 +41,37 @@ class LoanTransactionService {
             status,
             approvedAt 
         } as UpdateLoanTransactionDto;
-        return await loantransactionRepository.approveLoanTransaction(loanId, data);
+        return await loantransactionRepository.update(loanId, data);
     }
+
+    private addDays(date: Date, days: number) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    // Hàm chuyển đổi trạng thái khi đọc giả lại lấy sách sau khi đăng kí mượn được duyệt
+    async checkOutLoan(loanId: string) {
+        const loanTrans = await loantransactionRepository.findById(loanId);
+        if(!loanTrans) {
+            throw new Error('Phiếu mượn này không tồn tại');
+        }
+        const borrowedAt = new Date(); // ngày mượn
+        const dueAt = this.addDays(borrowedAt, 15); // hạn trả
+        const data = {
+            borrowedAt,
+            status: 'Đang mượn',
+            dueAt
+        } as UpdateLoanTransactionDto
+
+        return await loantransactionRepository.update(loanId, data);
+    }
+    
+    // Hàm tìm kiếm phiếu mượn sách
+
+    //Hàm chuyển đổi trạng thái khi đọc giả lại trả sách
+
+    // Hủy yêu cầu mượn
 }
 
 export default new LoanTransactionService()

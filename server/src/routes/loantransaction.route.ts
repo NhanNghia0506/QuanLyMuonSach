@@ -9,4 +9,5 @@ const LoanTransactionRoute = express.Router();
 
 LoanTransactionRoute.post('/readerReservation', ReaderMiddleWare, validateDto(CreateLoanTransactionDto), LoanTransactionController.loanReservation);
 LoanTransactionRoute.post('/approve/:id', StaffMiddleware, LoanTransactionController.approveLoanTransaction);
+LoanTransactionRoute.post('/checkOutLoan/:id', LoanTransactionController.checkOutLoan);
 export default LoanTransactionRoute;

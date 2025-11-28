@@ -1,4 +1,4 @@
-import CreateLoanTransactionDto from "../dtos/create.loantransaction.dto";
+import CreateLoanTransactionDto, { LoanStatus } from "../dtos/create.loantransaction.dto";
 import UpdateLoanTransactionDto from "../dtos/update.loantransaction.dto";
 import LoanTransaction from "../models/loantransaction.model";
 
@@ -7,11 +7,11 @@ class LoanTransactionRepository {
         return await LoanTransaction.create(data);
     }
 
-    async findById(id: String) {
+    async findById(id: string) {
         return await LoanTransaction.findById(id);
     }
 
-    async approveLoanTransaction(id: String, data: UpdateLoanTransactionDto) {
+    async update(id: string, data: UpdateLoanTransactionDto) {
         return await LoanTransaction.findByIdAndUpdate(id, data, { new: true });
     }
 
@@ -21,6 +21,10 @@ class LoanTransactionRepository {
             status: { $in : ['Đang mượn', 'Được duyệt']}
         });
     }
+
+    async setStatus(id: string, status: string) {
+        return await LoanTransaction.findByIdAndUpdate(id, { status }, { new: true });
+    } 
 }
 
 export default new LoanTransactionRepository();
