@@ -9,6 +9,7 @@ const LoanTransactionRoute = express.Router();
 
 LoanTransactionRoute.post('/readerReservation', ReaderMiddleWare, validateDto(CreateLoanTransactionDto), LoanTransactionController.loanReservation);
 LoanTransactionRoute.post('/approve/:id', StaffMiddleware, LoanTransactionController.approveLoanTransaction);
-LoanTransactionRoute.post('/checkOutLoan/:id', LoanTransactionController.checkOutLoan);
-LoanTransactionRoute.get('/search', LoanTransactionController.search);
+LoanTransactionRoute.post('/checkOutLoan/:id', StaffMiddleware, LoanTransactionController.checkOutLoan);
+LoanTransactionRoute.get('/search', StaffMiddleware, LoanTransactionController.search);
+LoanTransactionRoute.post('/returnBook/:id',StaffMiddleware, LoanTransactionController.returnBook);
 export default LoanTransactionRoute;

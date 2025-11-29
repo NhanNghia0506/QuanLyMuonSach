@@ -16,6 +16,11 @@ export interface LoanTransactionSearchQuery {
 }
 
 class LoanTransactionService {
+    private today: Date
+    constructor() {
+        this.today = new Date()
+        this.today.setHours(0, 0, 0, 0);
+    }
     async loanReservation(data: CreateLoanTransactionDto, readerId: string) {
         const book = await bookRepository.findById(data.bookId)
         // nếu sách không tồn tại
@@ -26,7 +31,6 @@ class LoanTransactionService {
                 ...data,
                 status: 'Chờ được duyệt',
                 readerId,
-                registeredAt: new Date()
             } as CreateLoanTransactionDto
             return await loantransactionRepository.loanReservation(dto);
         }
@@ -47,19 +51,18 @@ class LoanTransactionService {
             throw new Error('Số lượng sách đã hết')
         }
 
-        const approvedAt = new Date()
         const status = 'Được duyệt'
         const data = {
             staffId,
             status,
-            approvedAt 
+            approvedAt: this.today 
         } as UpdateLoanTransactionDto;
         return await loantransactionRepository.update(loanId, data);
     }
 
     private addDays(date: Date, days: number) {
-            const result = new Date(date);
-            result.setDate(result.getDate() + days);
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
         return result;
     }
 
@@ -69,13 +72,18 @@ class LoanTransactionService {
         if(!loanTrans) {
             throw new Error('Phiếu mượn này không tồn tại');
         }
-        const borrowedAt = new Date() // ngày mượn
+        const borrowedAt = this.today // ngày mượn
         const dueAt = this.addDays(borrowedAt, 15); // hạn trả
         const data = {
             borrowedAt,
             status: 'Đang mượn',
             dueAt
         } as UpdateLoanTransactionDto
+
+        // giam so luon sach
+        const book = await bookRepository.findById(loanTrans?.bookId.toString()!)
+
+        await bookRepository.update(loanTrans?.bookId.toString()!, { quantity: book!.quantity - 1 })
 
         return await loantransactionRepository.update(loanId, data);
     }
@@ -126,10 +134,25 @@ class LoanTransactionService {
 
     }
     
-    // Hàm tìm kiếm phiếu mượn sách
-
     //Hàm chuyển đổi trạng thái khi đọc giả lại trả sách
+    async returnBook(loanId: string) {
+        const loanTrans = await loantransactionRepository.findById(loanId);
+        if(!loanTrans) {
+            throw new Error('Phiếu mượn này không tồn tại');
+        }
 
+        const data = {
+            returnedAt: this.today,
+            status: "Đã trả"
+        } as UpdateLoanTransactionDto
+
+        // thêm lại sách + 1
+        const book = await bookRepository.findById(loanTrans.bookId.toString());
+        await bookRepository.update(book!.id, { quantity: book!.quantity + 1 });
+
+        return await loantransactionRepository.update(loanId, data)
+
+    }
     // Hủy yêu cầu mượn
 }
 

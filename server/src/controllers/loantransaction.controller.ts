@@ -51,7 +51,14 @@ class LoanTransactionController {
     }
 
     //Hàm chuyển đổi trạng thái khi đọc giả lại trả sách
-
+    async returnBook(req: Request, res: Response, next: NextFunction) {
+        try {
+            const newLoan = await loantransactionService.returnBook(req.params.id!)
+             res.status(200).json({ newLoan });
+        } catch (error: any) {
+            next(new AppError(error.message, 400));
+        }
+    }
 
     // Hủy yêu cầu mượn
 
