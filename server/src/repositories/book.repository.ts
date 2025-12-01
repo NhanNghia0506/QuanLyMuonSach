@@ -5,7 +5,7 @@ import Book from "../models/book.model";
 class BookRepository {
     // Tìm kiếm book theo id
     async findById(id: string) {
-        return await Book.findById(id);
+        return await Book.findById(id).populate('publisherId', 'name');
     }
 
     // Tìm kiếm book theo tên
@@ -23,6 +23,10 @@ class BookRepository {
 
     async update(id: string, data: UpdateBookDto) {
         return await Book.findByIdAndUpdate(id, data, { new: true })
+    }
+
+    async findAll() {
+        return await Book.find().populate('publisherId', 'name');
     }
 }
 

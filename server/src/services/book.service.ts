@@ -27,9 +27,17 @@ class BookService {
         return null;
     }
 
+    async getAll() {
+        return await bookRepository.findAll();
+    };
+
     async searchBooks(query: string) {
         const books = await bookRepository.findByName(query);
         return books;
+    }
+
+    async findById(id: string) {
+        return await bookRepository.findById(id);
     }
 }
 

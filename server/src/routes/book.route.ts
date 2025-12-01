@@ -10,4 +10,6 @@ BookRoute.post('/create', StaffMiddleware, upload.single('image'), validateDto(C
 BookRoute.delete('/delete/:id', StaffMiddleware, BookController.delete);
 BookRoute.put('/update/:id', StaffMiddleware, upload.single('image'), BookController.update);
 BookRoute.get('/', BookController.searchBooks);
+BookRoute.get('/all', BookController.getAll);
+BookRoute.get('/:id', BookController.findById);
 export default BookRoute;

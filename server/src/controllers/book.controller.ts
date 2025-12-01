@@ -39,6 +39,28 @@ class BookController {
         }
     }
 
+    async getAll(req: Request, res: Response, next: NextFunction) {
+        try {
+            const books = await bookService.getAll();
+            res.status(200).json({ books });
+        } catch (error: any) {
+            next(new AppError(error.message, 400));
+        }
+    }
+
+    async findById(req: Request<{ id: string }>, res: Response, next: NextFunction)  {
+        try {
+            const book = await bookService.findById(req.params.id);
+            if(book) {
+                res.status(200).json({ book });
+            } else {
+                res.status(404).json({ message: "Book not found" });
+            }   
+        } catch (error: any) {
+            next(new AppError(error.message, 400));
+        }
+    }
+
     async searchBooks(req: Request<{}, {}, {}, { search: string }>, res: Response, next: NextFunction) {
         try {
             const books = await bookService.searchBooks(req.query.search);

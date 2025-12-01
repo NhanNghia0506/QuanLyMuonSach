@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import "../models/publisher.model"
 
 export interface IBook {
     id?: string
