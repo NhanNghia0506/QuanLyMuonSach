@@ -25,33 +25,66 @@
               class="list-group-item list-group-item-action"
               @click="select(item)"
             >
-              <div class="fw-bold">{{ item.title || item.name }}</div>
-              <div class="small text-muted">{{ item.subtitle || item.meta }}</div>
+              <div class="fw-bold">{{ item.name }}</div>
+              <div class="small text-muted">{{ item.publisherId.name }}</div>
             </li>
           </ul>
         </div>
 
+        <!-- Menu trái -->
         <div class="mr-auto navbar-nav">
             <li class="nav-item">
-            <router-link :to="{ name: 'register' }" class="nav-link">
-                Phiếu mượn
-                <i class="fas fa-ticket-alt"></i>
-            </router-link>
+              <router-link :to="{ name: 'borrowlist' }" class="nav-link">
+                  Phiếu mượn
+                  <i class="fas fa-ticket-alt"></i>
+              </router-link>
+            </li>
+        </div>
+
+        <!-- Menu phải: login/logout -->
+        <div class="navbar-nav ms-auto">
+            <!-- Nếu chưa đăng nhập -->
+            <li v-if="!token" class="nav-item">
+              <router-link :to="{ name: 'register' }" class="nav-link">
+                Đăng ký
+                <i class="fas fa-user-plus"></i>
+              </router-link>
+            </li>
+
+            <!-- Nếu đã đăng nhập -->
+            <li v-else class="nav-item">
+              <button class="nav-link btn btn-link text-light" @click="logout">
+                Đăng xuất
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
             </li>
         </div>
     </nav>
 </template>
 
+
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
+
+const router = useRouter()
+
+// token — kiểm tra login
+const token = ref(localStorage.getItem("token") ?? null)
+
+function logout() {
+  localStorage.removeItem("token")
+  token.value = null
+  router.push({ name: 'login' })
+}
 
 const query = ref('')
 const results = ref([])
 const open = ref(false)
 let timer = null
 
-// debounce và gọi API tìm kiếm (thay endpoint nếu cần)
+// debounce search
 watch(query, (q) => {
   results.value = []
   if (timer) clearTimeout(timer)
@@ -61,25 +94,23 @@ watch(query, (q) => {
 
 async function fetchResults(q) {
   try {
-    // Thay '/api/search' bằng endpoint thực tế của bạn
     const res = await axios.get(`/api/book/?search=${encodeURIComponent(q)}`)
-    // giả sử server trả về mảng kết quả
     results.value = res.data.books || []
     open.value = results.value.length > 0
   } catch (err) {
-    console.error('Search error:', err?.response?.data || err.message || err)
+    console.error(err)
     results.value = []
     open.value = false
   }
 }
 
 function select(item) {
-  // xử lý khi chọn 1 kết quả (ví dụ chuyển trang hoặc emit)
-  // Nếu muốn chuyển trang: useRouter push
   open.value = false
   query.value = item.title || item.name || ''
-  // emit hoặc dispatch tùy nhu cầu
-  // ex: router.push({ name: 'bookDetail', params: { id: item.id } })
+  router.push({
+    name: 'bookdetail',
+    params: { id: item._id }
+  })
 }
 
 function selectFirst() {
@@ -90,11 +121,12 @@ function close() {
   open.value = false
 }
 
-// đóng dropdown khi click ngoài
 onMounted(() => {
   document.addEventListener('click', () => (open.value = false))
 })
 </script>
+
+
 
 <style>
 /* ...existing code... */

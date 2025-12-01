@@ -29,8 +29,8 @@
         <p><strong>Số lượng còn lại:</strong> {{ book.quantity }}</p>
 
         <!-- Nút đăng ký mượn -->
-        <button class="btn btn-primary mt-3" @click="registerBorrow">
-          Đăng kí mượn sách
+        <button class="btn btn-primary mt-3" @click="openModal">
+          Đăng ký mượn sách
         </button>
       </div>
 
@@ -42,15 +42,40 @@
     </div>
 
   </div>
+
+  <!-- Modal Xác Nhận -->
+  <div class="modal fade" id="confirmBorrowModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+          <h5 class="modal-title">Xác nhận đăng ký mượn</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          Bạn có chắc chắn muốn đăng ký mượn cuốn sách này không?
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" @click="confirmBorrow">Đồng ý</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import { Modal } from "bootstrap";
 import bookService from "@/services/book.service";
+import loan_transactionService from "@/services/loan_transaction.service";
 
 export default {
   data() {
     return {
       book: null,
+      modalInstance: null,
     };
   },
 
@@ -60,10 +85,15 @@ export default {
     try {
       const res = await bookService.getById(id);
       this.book = res.data.book;
-      console.log("Book detail:", this.book);
     } catch (err) {
       console.error(err);
     }
+  },
+
+  mounted() {
+    // Tạo instance modal bootstrap 5
+    const modalEl = document.getElementById("confirmBorrowModal");
+    this.modalInstance = new Modal(modalEl);
   },
 
   methods: {
@@ -73,13 +103,26 @@ export default {
     formatDate(date) {
       return new Date(date).toLocaleDateString("vi-VN");
     },
-    registerBorrow() {
-      alert("Bạn đã chọn đăng kí mượn sách!");
-      // TODO: chuyển sang trang đăng ký mượn hoặc mở modal
+
+    // Mở modal
+    openModal() {
+      this.modalInstance.show();
+    },
+
+    // Gọi API khi đồng ý
+    async confirmBorrow() {
+      try {
+        const res = await loan_transactionService.loanReservation(this.book._id);
+        this.modalInstance.hide();
+        this.$router.push({ name: 'borrowlist' })
+      } catch (err) {
+        console.error(err.message);
+      }
     }
   }
 };
 </script>
+
 
 <style scoped>
 .book-img {

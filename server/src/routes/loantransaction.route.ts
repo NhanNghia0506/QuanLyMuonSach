@@ -12,4 +12,5 @@ LoanTransactionRoute.post('/approve/:id', StaffMiddleware, LoanTransactionContro
 LoanTransactionRoute.post('/checkOutLoan/:id', StaffMiddleware, LoanTransactionController.checkOutLoan);
 LoanTransactionRoute.get('/search', StaffMiddleware, LoanTransactionController.search);
 LoanTransactionRoute.post('/returnBook/:id',StaffMiddleware, LoanTransactionController.returnBook);
+LoanTransactionRoute.get('/myLoans', ReaderMiddleWare, LoanTransactionController.getLoanTransactions);
 export default LoanTransactionRoute;

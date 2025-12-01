@@ -31,6 +31,12 @@ class LoanTransactionRepository {
         .populate("readerId", "name")
         .populate("bookId", "name")
     }
+
+    async findByReaderId(readerId: string) {
+        return LoanTransaction.find({ readerId: readerId })
+        .populate("bookId", "name")
+        .populate("staffId", "name");
+    }
 }
 
 export default new LoanTransactionRepository();

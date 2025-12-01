@@ -14,48 +14,41 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="borrow in borrows" :key="borrow._id">
-          <td>{{ borrow.book?.name || "Không rõ" }}</td>
-          <td>{{ formatDate(borrow.registerDate) }}</td>
+        <tr v-for="loan in loans" :key="loan._id">
+          <td>{{ loan.bookId?.name || "Không rõ" }}</td>
+          <td>{{ formatDate(loan.createdAt) }}</td>
           <td>
-            <span
-              :class="{
-                'badge bg-warning': borrow.status === 'pending',
-                'badge bg-success': borrow.status === 'approved',
-                'badge bg-secondary': borrow.status === 'returned',
-              }"
-            >
-              {{ statusText(borrow.status) }}
+            <span>
+              {{ loan.status }}
             </span>
           </td>
-          <td>{{ borrow.staff?.name || "-" }}</td>
-          <td>{{ borrow.approvedDate ? formatDate(borrow.approvedDate) : "-" }}</td>
-          <td>{{ borrow.returnDate ? formatDate(borrow.returnDate) : "-" }}</td>
+          <td>{{ loan.staffId?.name || "-" }}</td>
+          <td>{{ loan.approvedAt ? formatDate(loan.approvedAt) : "-" }}</td>
+          <td>{{ loan.returnedAt ? formatDate(loan.returnedAt) : "-" }}</td>
         </tr>
       </tbody>
     </table>
 
-    <div v-if="borrows.length === 0" class="text-center mt-4">
+    <div v-if="loans.length === 0" class="text-center mt-4">
       <p>Chưa có phiếu mượn nào.</p>
     </div>
   </div>
 </template>
 
 <script>
-// import borrowService from "@/services/borrow.service";
+import loanTransactionService from "@/services/loan_transaction.service";
 
 export default {
   data() {
     return {
-      borrows: [],
+      loans: [],
     };
   },
 
   async created() {
     try {
-      const res = await borrowService.getAll();
-      this.borrows = res.data.borrows;
-      console.log("Borrow list:", this.borrows);
+      const res = await loanTransactionService.myLoanTransactions();
+      this.loans = res.data.loanTrans;
     } catch (err) {
       console.error(err);
     }
@@ -64,18 +57,6 @@ export default {
   methods: {
     formatDate(date) {
       return date ? new Date(date).toLocaleDateString("vi-VN") : "-";
-    },
-    statusText(status) {
-      switch (status) {
-        case "pending":
-          return "Chờ duyệt";
-        case "approved":
-          return "Đã duyệt";
-        case "returned":
-          return "Đã trả";
-        default:
-          return status;
-      }
     },
   },
 };

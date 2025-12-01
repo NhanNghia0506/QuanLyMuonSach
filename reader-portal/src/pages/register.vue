@@ -124,7 +124,7 @@ export default {
     async submitForm(values) {
       try {
         const res = await readerServices.register(values);
-        console.log("Success:", res.data);
+         this.$router.push({ name: "login" })
       } catch (err) {
         console.error("Error:", err.response?.data);
       }

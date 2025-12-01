@@ -9,6 +9,10 @@ class ReaderService {
     async register(data: any) {
         return await this.api.post('/register', data);
     }
+
+    async login(data: any) {
+        return await this.api.post('/login', data);
+    }
 }
 
 export default new ReaderService()

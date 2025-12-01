@@ -153,7 +153,10 @@ class LoanTransactionService {
         return await loantransactionRepository.update(loanId, data)
 
     }
-    // Hủy yêu cầu mượn
+    
+    async getLoanTransactions(readerId: string) {
+        return await loantransactionRepository.findByReaderId(readerId);
+    }
 }
 
 export default new LoanTransactionService()

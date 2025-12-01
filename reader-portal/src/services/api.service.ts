@@ -6,9 +6,23 @@ const commonConfig = {
         Accept: "application/json",
     },
 };
+
 export default (baseURL: string) => {
-    return axios.create({
+    const instance = axios.create({
         baseURL,
         ...commonConfig,
     });
+
+    // 👉 Gắn Bearer token tự động cho mọi request
+    instance.interceptors.request.use((config) => {
+        const token = localStorage.getItem("token"); // lấy token đã lưu
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
+        return config;
+    });
+
+    return instance;
 };
