@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString, IsNumber, IsDateString } from 'class-validator';
 class CreateBookDto{
     @IsNotEmpty({ message: 'Tên của sách không để dể trống' })
