@@ -3,7 +3,7 @@
     <!-- Modal -->
     <div
       class="modal fade"
-      id="bookAddModal"
+      id="bookEditModal"
       tabindex="-1"
       aria-hidden="true"
       ref="modalRef"
@@ -13,61 +13,99 @@
 
           <!-- Header -->
           <div class="modal-header">
-            <h5 class="modal-title">Thêm sách</h5>
+            <h5 class="modal-title">Chỉnh sửa sách</h5>
             <button type="button" class="btn-close" @click="close"></button>
           </div>
 
           <!-- Body -->
           <div class="modal-body">
-            <Form :validation-schema="schema" @submit="submitAddBook">
+            <Form :validation-schema="schema" @submit="submitEditBook" v-if="book">
               <div class="row g-3">
 
                 <!-- Tên sách -->
                 <div class="col-12">
                   <label class="form-label">Tên sách</label>
-                  <Field name="name" type="text" class="form-control" placeholder="Nhập tên sách" />
+                  <Field
+                    name="name"
+                    type="text"
+                    class="form-control"
+                    v-model="bookForm.name"
+                    placeholder="Nhập tên sách"
+                  />
                   <ErrorMessage name="name" class="text-danger small" />
                 </div>
 
                 <!-- Nhà xuất bản -->
                 <div class="col-md-6">
-                  <label class="form-label">Nhà xuất bản</label>
-                  <Field as="select" name="publisherId" class="form-select">
-                    <option value="" disabled>Chọn nhà xuất bản</option>
-                    <option v-for="p in publishers" :key="p._id" :value="p._id">
-                      {{ p.name }}
-                    </option>
-                  </Field>
-                  <ErrorMessage name="publisherId" class="text-danger small" />
+                    <label class="form-label">Nhà xuất bản</label>
+                    <Field
+                      as="select"
+                      name="publisherId"
+                      class="form-select"
+                      v-model="bookForm.publisherId"
+                    >
+                      <option disabled value="">Chọn nhà xuất bản</option>
+
+                      <option
+                        v-for="p in publishers"
+                        :key="p._id"
+                        :value="p._id"
+                      >
+                        {{ p.name }}
+                      </option>
+                    </Field>
+
+                    <ErrorMessage name="publisherId" class="text-danger small" />
                 </div>
 
                 <!-- Ngày xuất bản -->
                 <div class="col-md-6">
                   <label class="form-label">Ngày xuất bản</label>
-                  <Field name="publishAt" type="date" class="form-control" />
+                  <Field
+                    name="publishAt"
+                    type="date"
+                    class="form-control"
+                    v-model="bookForm.publishAt"
+                  />
                   <ErrorMessage name="publishAt" class="text-danger small" />
                 </div>
 
                 <!-- Giá -->
                 <div class="col-md-6">
                   <label class="form-label">Giá (VND)</label>
-                  <Field name="price" type="number" class="form-control" placeholder="Nhập giá" />
+                  <Field
+                    name="price"
+                    type="number"
+                    class="form-control"
+                    placeholder="Nhập giá"
+                    v-model="bookForm.price"
+                  />
                   <ErrorMessage name="price" class="text-danger small" />
                 </div>
 
                 <!-- Số lượng -->
                 <div class="col-md-6">
                   <label class="form-label">Số lượng</label>
-                  <Field name="quantity" type="number" class="form-control" placeholder="Nhập số lượng" />
+                  <Field
+                    name="quantity"
+                    type="number"
+                    class="form-control"
+                    placeholder="Nhập số lượng"
+                    v-model="bookForm.quantity"
+                  />
                   <ErrorMessage name="quantity" class="text-danger small" />
                 </div>
 
                 <!-- Ảnh -->
                 <div class="col-12">
                   <label class="form-label">Ảnh sách</label>
-                  <input type="file" class="form-control" @change="onFileChange" />
+                  <input type="file" class="form-control" @change="onFileChange"/>
                   <div v-if="fileError" class="text-danger small mt-1">
                     {{ fileError }}
+                  </div>
+                  <img v-if="previewImage" :src="previewImage" alt="Ảnh mới" class="img-thumbnail" style="height: 150px;" />
+                  <div v-else-if="book.imageUrl" class="mt-2">
+                    <img :src="`http://localhost:3000/uploads/${book.imageUrl}`" alt="Ảnh sách" class="img-thumbnail" style="height: 150px;" />
                   </div>
                 </div>
 
@@ -81,7 +119,7 @@
           <!-- Footer -->
           <div class="modal-footer">
             <button class="btn btn-secondary" @click="close">Hủy</button>
-            <button class="btn btn-primary" @click="triggerSubmit">Thêm sách</button>
+            <button class="btn btn-primary" @click="triggerSubmit">Lưu thay đổi</button>
           </div>
 
         </div>
@@ -91,7 +129,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { Modal } from "bootstrap";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as Yup from "yup";
@@ -101,11 +139,22 @@ import publisherService from "@/services/publisher.service";
 // Modal refs
 const modalInstance = ref(null);
 const modalRef = ref(null);
+const previewImage = ref(null);
 
 // Data
 const publishers = ref([]);
 const imageFile = ref(null);
 const fileError = ref("");
+const book = ref(null); // sách được truyền từ trang trước
+
+// Form model
+const bookForm = ref({
+  name: "",
+  publisherId: "",
+  publishAt: "",
+  price: "",
+  quantity: "",
+});
 
 // Yup validation
 const schema = Yup.object({
@@ -122,8 +171,19 @@ async function fetchPublishers() {
   publishers.value = res.data.publishers;
 }
 
-// Open modal
-function open() {
+// Open modal với book được truyền
+function open(selectedBook) {
+  book.value = selectedBook;
+
+  // Gán giá trị cho form
+  bookForm.value = {
+    name: selectedBook.name || "",
+    publisherId: selectedBook.publisherId || "",
+    publishAt: selectedBook.publishAt ? selectedBook.publishAt.slice(0, 10) : "", // yyyy-mm-dd
+    price: selectedBook.price || 0,
+    quantity: selectedBook.quantity || 0,
+  };
+
   if (!modalInstance.value) {
     modalInstance.value = new Modal(modalRef.value);
   }
@@ -149,26 +209,26 @@ function onFileChange(e) {
   if (!file) return;
   imageFile.value = file;
   fileError.value = "";
+  book.value.imageUrl = null; 
+
+  // preview file mới
+  previewImage.value = URL.createObjectURL(file);
 }
 
 // Submit form
-async function submitAddBook(values) {
-  if (!imageFile.value) {
-    fileError.value = "Vui lòng chọn ảnh!";
-    return;
-  }
-
+async function submitEditBook(values) {
   const fd = new FormData();
   Object.keys(values).forEach((key) => fd.append(key, values[key]));
-  fd.append("image", imageFile.value);
+  if (imageFile.value) fd.append("image", imageFile.value);
+
+
   try {
-    await bookService.create(fd);
+    await bookService.update(book.value._id, fd);
     close();
     emit("refresh-list");
-
   } catch (err) {
     console.error(err);
-    alert("Lỗi khi thêm sách!");
+    alert("Lỗi khi chỉnh sửa sách!");
   }
 }
 

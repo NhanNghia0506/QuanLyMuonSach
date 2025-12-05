@@ -17,6 +17,10 @@ class BookService {
     async create(bookData: any)  {
         return await this.api.post('/create', bookData);
     }
+
+    async update(id: string, bookData: any) {
+        return await this.api.put(`/update/${id}`, bookData);
+    }
 }
 
 export default new BookService()

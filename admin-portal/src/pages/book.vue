@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2>Quản lý sách</h2>
-      <button class="btn btn-primary" @click="openModal">
+      <button class="btn btn-primary" @click="openAddModal">
         Thêm sách
       </button>
     </div>
@@ -25,7 +25,7 @@
         <tbody>
           <tr v-for="book in books" :key="book._id">
             <td>
-              <img :src="`http://localhost:3000/uploads/${book.imageUrl}`" alt="Book Image" class="img-thumbnail" style="max-width: 80px;">
+              <img :src="`http://localhost:3000/uploads/${book.imageUrl}`" alt="Book Image" class="img-thumbnail">
             </td>
             <td>{{ book.name }}</td>
             <td>{{ book.publisherId?.name ?? 'Không rõ' }}</td>
@@ -33,10 +33,10 @@
             <td>{{ formatPrice(book.price) }}</td>
             <td>{{ book.quantity }}</td>
             <td>
-              <button class="btn btn-sm btn-warning me-1" title="Chỉnh sửa">
+              <button class="btn btn-sm btn-warning me-1" title="Chỉnh sửa" @click="openUpdateModal(book)">
                 <i class="fas fa-pen"></i>
               </button>
-              <button class="btn btn-sm btn-danger" title="Xóa">
+              <button class="btn btn-sm btn-danger" title="Xóa" @click="deleteBook(book._id)">
                 <i class="fas fa-trash"></i>
               </button>
             </td>
@@ -44,58 +44,76 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Modals -->
+    <BookAddModal ref="addModal" @refresh-list="fetchBooks" />
+    <BookUpdateModal ref="updateModal" @refresh-list="fetchBooks" />
   </div>
-  <BookAddModal ref="addModal" />
 </template>
 
 <script>
+import { ref } from "vue";
 import bookService from "@/services/book.service";
 import BookAddModal from "@/components/BookAddModal.vue";
-import { ref } from "vue";
+import BookUpdateModal from "@/components/BookUpdateModal.vue";
 
 export default {
-  components: {
-    BookAddModal
-  },
+  components: { BookAddModal, BookUpdateModal },
 
   data() {
     return {
-      books: []
-    }
+      books: [],
+    };
   },
 
   setup() {
     const addModal = ref(null);
+    const updateModal = ref(null);
 
-    function openModal() {
+    // Mở modal thêm
+    const openAddModal = () => {
       addModal.value?.open();
-    }
-
-    return {
-      addModal,
-      openModal,
     };
+
+    // Mở modal chỉnh sửa với book được chọn
+    const openUpdateModal = (book) => {
+      updateModal.value?.open(book);
+    };
+
+    return { addModal, updateModal, openAddModal, openUpdateModal };
   },
 
   methods: {
     formatPrice(price) {
-      return price.toLocaleString('vi-VN') + 'đ'
+      return price.toLocaleString("vi-VN") + "đ";
     },
     formatDate(date) {
-      return new Date(date).toLocaleDateString('vi-VN')
+      return new Date(date).toLocaleDateString("vi-VN");
+    },
+    async fetchBooks() {
+      try {
+        const res = await bookService.getAll();
+        this.books = res.data.books;
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async deleteBook(id) {
+      if (!confirm("Bạn có chắc muốn xóa sách này?")) return;
+      try {
+        await bookService.delete(id);
+        this.fetchBooks();
+      } catch (err) {
+        console.error(err);
+        alert("Xóa thất bại!");
+      }
     },
   },
 
   async created() {
-    try {
-      const res = await bookService.getAll();
-      this.books = res.data.books;
-    } catch (err) {
-      console.error(err);
-    }
+    this.fetchBooks();
   },
-}
-
+};
 </script>
 
 <style scoped>
