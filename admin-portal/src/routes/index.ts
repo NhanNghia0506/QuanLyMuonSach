@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Book from "@/pages/book.vue";
 import Publisher from "@/pages/publisher.vue";
 import Login from "@/pages/login.vue";
+import Borrows from "@/pages/borrow_cardList.vue";
 const routes = [
     {
         path: "/books",
@@ -18,7 +19,16 @@ const routes = [
         name: "publisher",
         component: Publisher,
     },
-    
+    {
+        path: "/borrows",
+        name: "borrows",
+        component: Borrows,
+    },
+    {
+        path: "/publisher",
+        name: "publisher",
+        component: Publisher,
+    },
 ];
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

@@ -154,8 +154,11 @@ class LoanTransactionService {
 
     }
     
-    async getLoanTransactions(readerId: string) {
-        return await loantransactionRepository.findByReaderId(readerId);
+    async getLoanTransactions(readerId?: string) {
+        if(readerId) {
+            return await loantransactionRepository.findByReaderId(readerId);
+        }
+        return await loantransactionRepository.findAll();
     }
 }
 

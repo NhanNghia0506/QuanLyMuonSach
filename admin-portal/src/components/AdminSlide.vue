@@ -23,10 +23,11 @@
       </li>
 
       <li class="nav-item mb-2">
-        <a href="#" class="nav-link text-white d-flex align-items-center gap-2">
-          <i class="fas fa-ticket-alt"></i>
+        <router-link :to="{ name : 'borrows'}" class="nav-link text-white d-flex align-items-center gap-2"
+          >
+          <i class="fas fa-book"></i>
           Phiếu mượn
-        </a>
+        </router-link>
       </li>
 
       <li class="nav-item mb-2">

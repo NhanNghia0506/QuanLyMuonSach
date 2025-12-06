@@ -69,7 +69,14 @@ class LoanTransactionController {
         }
     }
 
-    // Hủy yêu cầu mượn
+    async getAllLoanTransactions(req: Request, res: Response, next: NextFunction) {
+        try {
+            const loanTrans = await loantransactionService.getLoanTransactions();
+            res.status(200).json({ loanTrans });
+        } catch (error:any) {
+            next(new AppError(error.message, 400));
+        }
+    }
 
 
 }

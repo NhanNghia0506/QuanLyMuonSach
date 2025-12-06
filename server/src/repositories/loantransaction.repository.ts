@@ -37,6 +37,13 @@ class LoanTransactionRepository {
         .populate("bookId", "name")
         .populate("staffId", "name");
     }
+
+    async findAll() {
+        return LoanTransaction.find()
+        .populate("readerId", "name")
+        .populate("bookId", "name")
+        .populate("staffId", "name");
+    }
 }
 
 export default new LoanTransactionRepository();
