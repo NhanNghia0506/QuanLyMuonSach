@@ -17,6 +17,11 @@ class StaffService {
     async login(data: any) {
         return await this.api.post('/login', data);
     }
+
+    // Lấy danh sách nhân viên
+    async allStaffs() {
+        return await this.api.get('/all');
+    }
 }
 
 export default new StaffService();

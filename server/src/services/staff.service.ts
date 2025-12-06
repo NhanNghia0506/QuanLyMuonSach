@@ -35,6 +35,10 @@ class StaffService {
         );
         return token;
     }
+
+    async getAll() {
+        return await staffRepository.getAll();
+    }
 }
 
 export default new StaffService();

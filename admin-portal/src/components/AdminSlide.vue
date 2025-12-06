@@ -31,10 +31,11 @@
       </li>
 
       <li class="nav-item mb-2">
-        <a href="#" class="nav-link text-white d-flex align-items-center gap-2">
+        <router-link :to="{ name : 'staffs'}" class="nav-link text-white d-flex align-items-center gap-2"
+          >
           <i class="fas fa-users"></i>
-          Đọc giả
-        </a>
+          Nhân viên
+        </router-link>
       </li>
     </ul>
 

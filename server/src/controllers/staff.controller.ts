@@ -33,6 +33,15 @@ class StaffController {
             next(new AppError(error.message, 400))
         }
     }
+
+    async getAll(req: Request, res: Response, next: NextFunction) {
+        try {
+            const staffs = await staffService.getAll();
+            res.status(200).json({ staffs });
+        } catch (error: any) {
+            next(new AppError(error.message, 400))
+        }
+    }
 }
 
 export default new StaffController();

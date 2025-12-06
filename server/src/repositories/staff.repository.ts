@@ -17,6 +17,10 @@ class StaffRepository {
     async create(data: CreateStaffDto) {
         return await Staff.create(data);
     }
+
+    async getAll() {
+        return await Staff.find();
+    }
 }
 
 export default new StaffRepository();

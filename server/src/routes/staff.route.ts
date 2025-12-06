@@ -9,5 +9,5 @@ const StaffRoute = express.Router();
 
 StaffRoute.post('/register', StaffMiddleware, validateDto(CreateStaffDto), staffController.create);
 StaffRoute.post('/login',validateDto(LoginStaffDto), staffController.login);
-
+StaffRoute.get('/all', StaffMiddleware, staffController.getAll);
 export default StaffRoute;

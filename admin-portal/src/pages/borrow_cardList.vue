@@ -228,6 +228,7 @@ export default {
 
         try {
           const res = await loanTransactionService.filterTransactions(params);
+          console.log("Filtered loans:", res.data.loanTrans);
           this.loans = res.data.loanTrans;
         } catch (error) {
           alert(error.response?.data?.message || "Lỗi khi duyệt");

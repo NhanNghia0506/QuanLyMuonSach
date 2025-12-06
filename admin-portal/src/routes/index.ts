@@ -3,6 +3,7 @@ import Book from "@/pages/book.vue";
 import Publisher from "@/pages/publisher.vue";
 import Login from "@/pages/login.vue";
 import Borrows from "@/pages/borrow_cardList.vue";
+import Staffs from "@/pages/staffs.vue";
 const routes = [
     {
         path: "/books",
@@ -28,6 +29,11 @@ const routes = [
         path: "/publisher",
         name: "publisher",
         component: Publisher,
+    },
+    {
+        path: "/staffs",
+        name: "staffs",
+        component: Staffs,
     },
 ];
 const router = createRouter({

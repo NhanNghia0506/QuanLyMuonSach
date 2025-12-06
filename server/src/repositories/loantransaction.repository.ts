@@ -30,6 +30,7 @@ class LoanTransactionRepository {
         return LoanTransaction.find(filter)
         .populate("readerId", "name")
         .populate("bookId", "name")
+        .populate("staffId", "name");
     }
 
     async findByReaderId(readerId: string) {
