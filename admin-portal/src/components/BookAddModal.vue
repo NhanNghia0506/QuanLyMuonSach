@@ -41,6 +41,13 @@
                   <ErrorMessage name="publisherId" class="text-danger small" />
                 </div>
 
+                <!-- Tên sách -->
+                <div class="col-6">
+                  <label class="form-label">Tên tác giả</label>
+                  <Field name="author" type="text" class="form-control" placeholder="Nhập tên tác giả" />
+                  <ErrorMessage name="author" class="text-danger small" />
+                </div>
+
                 <!-- Ngày xuất bản -->
                 <div class="col-md-6">
                   <label class="form-label">Ngày xuất bản</label>
@@ -110,6 +117,7 @@ const fileError = ref("");
 // Yup validation
 const schema = Yup.object({
   name: Yup.string().required("Tên sách không được để trống"),
+  author: Yup.string().required("Tên tác giả không được để trống"),
   publisherId: Yup.string().required("Vui lòng chọn nhà xuất bản"),
   publishAt: Yup.string().required("Ngày xuất bản không được để trống"),
   price: Yup.number().required("Giá không được để trống").min(1, "Giá phải > 0"),

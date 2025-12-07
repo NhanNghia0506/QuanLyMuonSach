@@ -8,7 +8,8 @@ export interface ILoanTransaction {
     borrowedAt: Date | undefined, // Ngày mượn
     dueAt: Date | undefined, // Hạn trả
     returnedAt: Date | undefined // Ngày trả
-    status: 'Chờ được duyệt' | 'Được duyệt' | 'Đang mượn' | 'Đã trả' | 'Hư hỏng' | 'Trễ hạn' | 'Mất sách'
+    status: 'Chờ được duyệt' | 'Được duyệt' | 'Đang mượn' | 'Đã trả' | 'Hư hỏng' | 'Trễ hạn' | 'Mất sách',
+    fine?: number
 }
 
 const LoanTransactionSchema = new Schema<ILoanTransaction> (
@@ -20,6 +21,7 @@ const LoanTransactionSchema = new Schema<ILoanTransaction> (
         borrowedAt: { type: Date },
         dueAt: { type: Date },
         returnedAt: { type: Date },
+        fine: { type: Number },
         status: { type: String, enum: ['Chờ được duyệt' , 'Được duyệt' , 'Đang mượn' , 'Đã trả' , 'Hư hỏng' , 'Trễ hạn' , 'Mất sách'], required: true }
     },
     {

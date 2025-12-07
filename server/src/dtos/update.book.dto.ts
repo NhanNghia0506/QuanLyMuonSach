@@ -22,6 +22,8 @@ class UpdateBookDto{
     @IsOptional()
     @IsString({ message: 'ID nhà xuất bản phải là chuỗi' })
     publisherId?: string;
+
+    author?: string;
 }
 
 export default UpdateBookDto;

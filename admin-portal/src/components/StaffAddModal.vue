@@ -132,8 +132,7 @@ async function submitAddEmployee(values) {
     close();
     emit("refresh-list");
   } catch (error) {
-    console.error(error);
-    alert("Lỗi khi thêm nhân viên!");
+    alert(error.response?.data?.message || "Đã có lỗi xảy ra");
   }
 }
 

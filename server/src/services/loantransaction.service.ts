@@ -23,10 +23,14 @@ class LoanTransactionService {
     }
     async loanReservation(data: CreateLoanTransactionDto, readerId: string) {
         const book = await bookRepository.findById(data.bookId)
+        
         // nếu sách không tồn tại
         if(!book) {
             throw new Error('Sách này không tồn tại')
         } else {
+            if(book?.quantity! == 0) {
+              throw new  Error('Số lượng sách đã hết')
+            }
             const dto = {
                 ...data,
                 status: 'Chờ được duyệt',
@@ -45,9 +49,9 @@ class LoanTransactionService {
         const book = await bookRepository.findById(loanTrans?.bookId.toString()!)
 
         const totalsBorrowed = await loantransactionRepository.getBorrowedCount(loanTrans?.bookId.toString()!)
-
+        console.log('totalsBorrowed', totalsBorrowed);
         // Nếu số lượng sách đã hết 
-        if(book?.quantity! - totalsBorrowed < 0) {
+        if(book?.quantity! == 0) {
             throw new Error('Số lượng sách đã hết')
         }
 
@@ -136,23 +140,45 @@ class LoanTransactionService {
     
     //Hàm chuyển đổi trạng thái khi đọc giả lại trả sách
     async returnBook(loanId: string) {
-        const loanTrans = await loantransactionRepository.findById(loanId);
-        if(!loanTrans) {
-            throw new Error('Phiếu mượn này không tồn tại');
-        }
-
-        const data = {
-            returnedAt: this.today,
-            status: "Đã trả"
-        } as UpdateLoanTransactionDto
-
-        // thêm lại sách + 1
-        const book = await bookRepository.findById(loanTrans.bookId.toString());
-        await bookRepository.update(book!.id, { quantity: book!.quantity + 1 });
-
-        return await loantransactionRepository.update(loanId, data)
-
+    // 1. Lấy giao dịch mượn
+    const loanTrans = await loantransactionRepository.findById(loanId);
+    if (!loanTrans) {
+        throw new Error('Phiếu mượn này không tồn tại');
     }
+
+    // 2. Lấy thông tin sách
+    const book = await bookRepository.findById(loanTrans.bookId.toString());
+    if (!book) {
+        throw new Error('Sách không tồn tại');
+    }
+
+    // 3. Tính phí phạt nếu trả quá hạn
+    let fine = 0;
+    if (loanTrans.dueAt) {
+        const today = new Date(this.today);
+        const dueDate = new Date(loanTrans.dueAt);
+        if (today > dueDate) {
+            const diffTime = today.getTime() - dueDate.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            fine = diffDays * 15000; // 15.000 VND / ngày
+            console.log(`Trả sách trễ ${diffDays} ngày, phí phạt: ${fine} VND`);
+        }
+    }
+
+    // 4. Cập nhật phiếu mượn
+    const data =  {
+        returnedAt: this.today,
+        status: 'Đã trả',
+        fine, // thêm phí phạt
+    } as UpdateLoanTransactionDto;
+
+    // 5. Cộng lại số lượng sách
+    await bookRepository.update(book.id, { quantity: book.quantity + 1 });
+
+    // 6. Cập nhật giao dịch mượn
+    return await loantransactionRepository.update(loanId, data);
+}
+
     
     async getLoanTransactions(readerId?: string) {
         if(readerId) {

@@ -7,6 +7,7 @@ export interface IBook {
     imageUrl: string,
     price: number,
     quantity: number,
+    author: string,
     publishAt: Date,
     publisherId: Schema.Types.ObjectId,
 }
@@ -15,6 +16,7 @@ const BookSchema = new Schema<IBook>(
     {
         name: { type: String, required: true },
         imageUrl: { type: String, required: true },
+        author: { type: String, required: true },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true },
         publishAt: { type: Date, required: true },

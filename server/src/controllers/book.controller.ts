@@ -28,7 +28,16 @@ class BookController {
     async update(req: Request<{ id: string }, {}>, res: Response, next: NextFunction){ 
         try {
             const id = req.params.id;
-            const newBook = await bookService.update(id, {...req.body, imageUrl: req.file?.filename });
+
+            // Chuẩn bị dữ liệu update
+            const updateData: any = { ...req.body };
+
+            if (req.file) {
+                updateData.imageUrl = req.file.filename;
+            }
+
+            const newBook = await bookService.update(id, updateData);
+
             if(newBook) {
                 res.status(200).json({ newBook });
             } else {
@@ -38,6 +47,7 @@ class BookController {
             next(new AppError(error.message, 400));
         }
     }
+
 
     async getAll(req: Request, res: Response, next: NextFunction) {
         try {

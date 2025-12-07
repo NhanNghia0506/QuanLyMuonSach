@@ -38,6 +38,9 @@ class UpdateLoanTransactionDto {
     @IsOptional()
     @IsDateString()
     approvedAt?: Date;
+
+    @IsOptional()
+    fine?: number
 }
 
 export default UpdateLoanTransactionDto;

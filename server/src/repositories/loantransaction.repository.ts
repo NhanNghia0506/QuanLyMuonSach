@@ -18,7 +18,7 @@ class LoanTransactionRepository {
     async getBorrowedCount(bookId: string ) {
         return await LoanTransaction.countDocuments({
             bookId: bookId,
-            status: { $in : ['Đang mượn', 'Được duyệt']}
+            status: { $in : ['Đang mượn']}
         });
     }
 

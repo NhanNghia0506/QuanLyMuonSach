@@ -9,7 +9,7 @@
     <div class="card-body">
       <h5 class="card-title">{{ book.name }}</h5>
       <p class="card-text mb-1 text-muted">
-        Tác giả: <strong>{{ book.publisherId.name }}</strong>
+        Tác giả: <strong>{{ book.author }}</strong>
       </p>
       <p class="card-text mb-1">
         Giá: <span class="text-danger fw-bold">{{ formatPrice(book.price) }}</span>

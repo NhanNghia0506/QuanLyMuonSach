@@ -22,6 +22,10 @@
           {{ book.publisherId?.name ?? 'Không rõ' }}
         </p>
 
+        <p><strong>Tác giả:</strong> 
+          {{ book.author ?? 'Không rõ' }}
+        </p>
+
         <p><strong>Ngày xuất bản:</strong> 
           {{ formatDate(book.publishAt) }}
         </p>
@@ -116,7 +120,7 @@ export default {
         this.modalInstance.hide();
         this.$router.push({ name: 'borrowlist' })
       } catch (err) {
-        console.error(err.message);
+        alert(err.response.data.message);
       }
     }
   }

@@ -16,7 +16,7 @@ class CreateBookDto{
     publishAt!: Date;
 
     publisherId!: string;
-
+    author!: string;
 }
 
 export default CreateBookDto;

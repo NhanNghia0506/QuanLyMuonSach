@@ -13,7 +13,7 @@
               @keydown.enter.prevent="selectFirst()"
               type="search"
               class="form-control"
-              placeholder="Tìm sách, tác giả, mã phiếu..."
+              placeholder="Tìm sách"
               aria-label="Tìm kiếm"
             />
           </div>

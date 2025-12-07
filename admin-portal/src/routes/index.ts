@@ -9,6 +9,7 @@ const routes = [
         path: "/books",
         name: "books",
         component: Book,
+        meta: { requiresAuth: true }
     },
     {
         path: "/login",
@@ -19,21 +20,25 @@ const routes = [
         path: "/publisher",
         name: "publisher",
         component: Publisher,
+        meta: { requiresAuth: true }
     },
     {
         path: "/borrows",
         name: "borrows",
         component: Borrows,
+        meta: { requiresAuth: true }
     },
     {
         path: "/publisher",
         name: "publisher",
         component: Publisher,
+        meta: { requiresAuth: true }
     },
     {
         path: "/staffs",
         name: "staffs",
         component: Staffs,
+        meta: { requiresAuth: true }
     },
 ];
 const router = createRouter({
@@ -43,6 +48,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
+
+  console.log('Router Guard:', token)
 
   if (to.meta.requiresAuth && !token) {
     // Nếu chưa đăng nhập → chuyển về trang login

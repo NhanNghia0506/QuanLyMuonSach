@@ -326,7 +326,11 @@ export default {
     // Xử lý xác nhận đã trả
     async confirmReturned() {
       try {
-        await loanTransactionService.confirmReturned(this.selectedLoan._id);
+        const res = await loanTransactionService.confirmReturned(this.selectedLoan._id);
+        console.log("Confirm returned response:", res.data.newLoan);
+        if(res.data.newLoan.fine) {
+          alert(`Độc giả có khoản phạt: ${res.data.newLoan.fine} VND`);
+        }
         await this.loadLoans();
         this.closeModal();
       } catch (err) {

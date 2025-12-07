@@ -41,12 +41,29 @@
 
     <!-- Logout Button at bottom -->
     <div class="mt-auto pt-3 border-top">
-      <a href="#" class="nav-link text-white d-flex align-items-center gap-2">
+      <button
+        class="btn btn-link text-white d-flex align-items-center gap-2"
+        @click="logout"
+      >
         <i class="fas fa-sign-out-alt"></i>
         Đăng xuất
-      </a>
+      </button>
     </div>
   </div>
 </div>
 
 </template>
+
+<script setup>
+  import { ref } from "vue";
+  import { useRouter } from "vue-router";
+  
+  const router = useRouter();
+  const token = ref(localStorage.getItem("token"));
+
+  function logout() {
+    localStorage.removeItem("token");
+    token.value = null;
+    router.push({ name: "login" });
+  }
+</script>
